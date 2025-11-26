@@ -1,0 +1,6 @@
+{
+  "name": "qrcode-api",
+  "dependencies": {
+    "qrcode": "latest"
+  }
+}

@@ -63,8 +63,22 @@
         }
 
         .subtitle {
-            color: #6b7280;
             font-size: 1.1rem;
+            color: #6b7280;
+            margin-top: 0;
+        }
+
+        /* Lien Inforeole propre */
+        .brand-link {
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px dotted #9ca3af;
+            transition: color 0.2s;
+        }
+        .brand-link:hover {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
         }
 
         /* Tool Section */
@@ -150,12 +164,12 @@
             font-style: italic;
         }
 
-        a {
+        a.bio-link {
             color: var(--primary-color);
             text-decoration: none;
         }
 
-        a:hover {
+        a.bio-link:hover {
             text-decoration: underline;
         }
     </style>
@@ -171,8 +185,10 @@
         <header>
             <h1 data-i18n="title">Générateur QR Code API</h1>
             <p class="subtitle">
-                <span data-i18n="subtitle">Un micro-service offert par</span> 
-                <strong>Phil d'Inforéole.fr</strong>
+                <span data-i18n="subtitle">Micro-service offert par</span> 
+                <a href="https://inforeole.fr" target="_blank" class="brand-link">
+                    Phil, d'Inforeole.fr
+                </a>
             </p>
         </header>
 
@@ -202,7 +218,7 @@
             </p>
             <p>
                 <span data-i18n="bioLinkText">Retrouvez mes services et infos sur :</span><br>
-                <a href="http://philippe-eveilleau.fr" target="_blank">http://philippe-eveilleau.fr</a>
+                <a href="http://philippe-eveilleau.fr" target="_blank" class="bio-link">http://philippe-eveilleau.fr</a>
             </p>
         </div>
     </footer>
@@ -212,7 +228,7 @@
         const translations = {
             fr: {
                 title: "Générateur QR Code API",
-                subtitle: "Un micro-service offert par",
+                subtitle: "Micro-service offert par",
                 inputPlaceholder: "Entrez une URL ou du texte à encoder",
                 generateBtn: "Générer",
                 placeholder: "Le QR Code apparaîtra ici",
@@ -222,7 +238,7 @@
             },
             en: {
                 title: "QR Code Generator API",
-                subtitle: "A micro-service provided by",
+                subtitle: "Micro-service provided by",
                 inputPlaceholder: "Enter a URL or text to encode",
                 generateBtn: "Generate",
                 placeholder: "The QR Code will appear here",
@@ -241,11 +257,13 @@
             const t = translations[lang];
             
             document.querySelector('[data-i18n="title"]').textContent = t.title;
+            // On ne remplace que le texte du span, pas le lien entier
             document.querySelector('[data-i18n="subtitle"]').textContent = t.subtitle;
+            
             document.querySelector('[data-i18n="generateBtn"]').textContent = t.generateBtn;
             document.querySelector('[data-i18n="placeholder"]').textContent = t.placeholder;
             document.querySelector('[data-i18n="bioTitle"]').textContent = t.bioTitle;
-            document.querySelector('[data-i18n="bioDesc"]').innerHTML = t.bioDesc; // innerHTML for line break
+            document.querySelector('[data-i18n="bioDesc"]').innerHTML = t.bioDesc;
             document.querySelector('[data-i18n="bioLinkText"]').textContent = t.bioLinkText;
             
             // Update Attributes

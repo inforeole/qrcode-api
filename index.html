@@ -10,6 +10,8 @@
             --text-color: #1f2937;
             --bg-color: #f3f4f6;
             --card-bg: #ffffff;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
         }
 
         body {
@@ -87,7 +89,7 @@
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            margin-bottom: 2rem;
         }
 
         .input-group {
@@ -130,11 +132,55 @@
             justify-content: center;
             border: 2px dashed #e5e7eb;
             border-radius: 8px;
+            text-align: center;
         }
 
         img {
             max-width: 100%;
             height: auto;
+        }
+
+        /* API Docs Section */
+        .api-docs {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .api-docs h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        .method {
+            color: #4ade80;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .param {
+            color: #93c5fd;
+        }
+
+        .comment {
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 5px;
         }
 
         /* Footer / Bio Section */
@@ -192,7 +238,7 @@
             </p>
         </header>
 
-        <main class="card">
+        <section class="card">
             <div class="input-group">
                 <input type="text" id="inputText" placeholder="Entrez une URL ou du texte à encoder">
                 <button onclick="generate()" class="action-btn" data-i18n="generateBtn">Générer</button>
@@ -202,11 +248,29 @@
                 <span id="placeholder-text" style="color: #9ca3af;" data-i18n="placeholder">Le QR Code apparaîtra ici</span>
                 <img id="preview" src="" alt="QR Code" style="display:none;">
             </div>
+        </section>
+
+        <section class="api-docs">
+            <h3 data-i18n="apiTitle">Documentation pour Développeurs</h3>
             
-            <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 15px;">
-                Endpoint: <code>/api/qr?text=...</code>
-            </p>
-        </main>
+            <div class="code-block">
+                <span class="comment"># <span data-i18n="apiComment1">Format de la requête HTTP</span></span>
+                <div><span class="method">GET</span> /api/qr?text=<span class="param">VOTRE_TEXTE_URL_ENCODED</span></div>
+            </div>
+
+            <div class="code-block">
+                <span class="comment"># <span data-i18n="apiComment2">Exemple cURL / Terminal</span></span>
+                curl "https://<span id="host-display">...</span>/api/qr?text=Hello" > qr.png
+            </div>
+
+            <div class="code-block">
+                <span class="comment"># <span data-i18n="apiComment3">Utilisation dans n8n (HTTP Request Node)</span></span>
+                Method: GET<br>
+                URL: https://<span id="host-display-2">...</span>/api/qr<br>
+                Query Parameter: text = {{ $json.body.url }}<br>
+                Response Format: File
+            </div>
+        </section>
     </div>
 
     <footer>
@@ -232,6 +296,10 @@
                 inputPlaceholder: "Entrez une URL ou du texte à encoder",
                 generateBtn: "Générer",
                 placeholder: "Le QR Code apparaîtra ici",
+                apiTitle: "Documentation Technique / API",
+                apiComment1: "Format de la requête HTTP",
+                apiComment2: "Exemple cURL / Terminal",
+                apiComment3: "Utilisation dans n8n (HTTP Request Node)",
                 bioTitle: "À propos de Philippe Eveilleau",
                 bioDesc: "Expert SaaS et automatisations IA.<br>\"Je vous aide à automatiser tout ce qui prend trop de temps.\"",
                 bioLinkText: "Retrouvez mes services et infos sur :"
@@ -242,6 +310,10 @@
                 inputPlaceholder: "Enter a URL or text to encode",
                 generateBtn: "Generate",
                 placeholder: "The QR Code will appear here",
+                apiTitle: "Developer Documentation / API",
+                apiComment1: "HTTP Request Format",
+                apiComment2: "cURL Example",
+                apiComment3: "Usage in n8n (HTTP Request Node)",
                 bioTitle: "About Philippe Eveilleau",
                 bioDesc: "SaaS & AI Automation Expert.<br>\"I help you automate everything that takes too much time.\"",
                 bioLinkText: "Find my services and info at:"
@@ -257,11 +329,17 @@
             const t = translations[lang];
             
             document.querySelector('[data-i18n="title"]').textContent = t.title;
-            // On ne remplace que le texte du span, pas le lien entier
             document.querySelector('[data-i18n="subtitle"]').textContent = t.subtitle;
-            
             document.querySelector('[data-i18n="generateBtn"]').textContent = t.generateBtn;
             document.querySelector('[data-i18n="placeholder"]').textContent = t.placeholder;
+            
+            // API section
+            document.querySelector('[data-i18n="apiTitle"]').textContent = t.apiTitle;
+            document.querySelector('[data-i18n="apiComment1"]').textContent = t.apiComment1;
+            document.querySelector('[data-i18n="apiComment2"]').textContent = t.apiComment2;
+            document.querySelector('[data-i18n="apiComment3"]').textContent = t.apiComment3;
+
+            // Bio section
             document.querySelector('[data-i18n="bioTitle"]').textContent = t.bioTitle;
             document.querySelector('[data-i18n="bioDesc"]').innerHTML = t.bioDesc;
             document.querySelector('[data-i18n="bioLinkText"]').textContent = t.bioLinkText;
@@ -290,6 +368,11 @@
             }
         }
 
+        // Dynamically fill current hostname in docs
+        const currentHost = window.location.host;
+        document.getElementById('host-display').textContent = currentHost;
+        document.getElementById('host-display-2').textContent = currentHost;
+
         // Event Listeners
         document.getElementById('inputText').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') generate();
@@ -299,6 +382,8 @@
         const userLang = navigator.language || navigator.userLanguage; 
         if (userLang.startsWith('en')) {
             setLanguage('en');
+        } else {
+            setLanguage('fr');
         }
     </script>
 </body>
